@@ -8,7 +8,7 @@
                 {
                     "text": "Я странник.",
                     "nextDialog": "traveler_intro",
-                    "flag": "met_guard"
+                    "flag": "talkedToFarmer"
                 },
                 {
                     "text": "Это не твое дело.",

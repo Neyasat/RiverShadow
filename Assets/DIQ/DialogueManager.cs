@@ -182,6 +182,12 @@ public class DialogueManager : MonoBehaviour
             flags.Add(flagName, value);
         }
     }
+
+    // Метод для получения всех флагов
+    public Dictionary<string, bool> GetAllFlags()
+    {
+        return flags;
+    }
 }
 
 [System.Serializable]

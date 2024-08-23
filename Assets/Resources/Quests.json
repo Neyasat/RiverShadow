@@ -1,0 +1,18 @@
+{
+    "quests": [
+        {
+            "id": "quest1",
+            "name": "Начальный квест",
+            "description": "Помогите фермеру собрать урожай.",
+            "requiredFlags": ["talkedToFarmer"],
+            "completionFlags": ["harvestCompleted"]
+        },
+        {
+            "id": "quest2",
+            "name": "Защитник деревни",
+            "description": "Отразите нападение бандитов на деревню.",
+            "requiredFlags": ["villageUnderAttack"],
+            "completionFlags": ["banditsDefeated"]
+        }
+    ]
+}
