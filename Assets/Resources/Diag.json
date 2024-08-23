@@ -1,0 +1,92 @@
+{
+    "dialogs": [
+        {
+            "id": "intro",
+            "character": "Охранник",
+            "text": "Стой! Кто идет?",
+            "responses": [
+                {
+                    "text": "Я странник.",
+                    "nextDialog": "traveler_intro",
+                    "flag": "met_guard"
+                },
+                {
+                    "text": "Это не твое дело.",
+                    "nextDialog": "rude_intro",
+                    "flag": "met_guard",
+                    "requiredFlag": ""
+                }
+            ]
+        },
+        {
+            "id": "traveler_intro",
+            "character": "Охранник",
+            "text": "Странник, говоришь? Что привело тебя в эти края?",
+            "responses": [
+                {
+                    "text": "Я ищу приключений.",
+                    "nextDialog": "adventure_seeker",
+                    "flag": "seeking_adventure"
+                },
+                {
+                    "text": "Я просто прохожу мимо.",
+                    "nextDialog": "passing_through",
+                    "flag": "just_passing"
+                }
+            ]
+        },
+        {
+            "id": "rude_intro",
+            "character": "Охранник",
+            "text": "Следи за языком, незнакомец. Тебе лучше иметь вескую причину, чтобы быть здесь.",
+            "responses": [
+                {
+                    "text": "Извиняюсь, я странник.",
+                    "nextDialog": "traveler_intro",
+                    "flag": "seeking_adventure"
+                },
+                {
+                    "text": "Мне не нужно объясняться.",
+                    "nextDialog": "rude_end",
+                    "flag": "hostile"
+                }
+            ]
+        },
+        {
+            "id": "adventure_seeker",
+            "character": "Охранник",
+            "text": "Приключений, говоришь? Тебе следует поговорить со старейшиной города. У него может быть для тебя задание.",
+            "responses": [
+                {
+                    "text": "Спасибо, я его найду.",
+                    "nextDialog": "end",
+                    "flag": "talk_to_elder"
+                }
+            ]
+        },
+        {
+            "id": "passing_through",
+            "character": "Охранник",
+            "text": "Хорошо, но будь осторожен, эти земли могут быть опасны.",
+            "responses": [
+                {
+                    "text": "Спасибо за предупреждение.",
+                    "nextDialog": "end",
+                    "flag": ""
+                }
+            ]
+        },
+        {
+            "id": "rude_end",
+            "character": "Охранник",
+            "text": "Ладно, но не создавай здесь проблем.",
+            "responses": [
+                {
+                    "text": "Не буду.",
+                    "nextDialog": "end",
+                    "flag": ""
+                }
+            ]
+        }
+    ]
+}
