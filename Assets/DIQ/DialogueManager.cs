@@ -4,16 +4,37 @@ using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
+    // Singleton instance
+    public static DialogueManager Instance { get; private set; }
+
+    // Словарь для хранения всех флагов
+    private Dictionary<string, bool> flags = new Dictionary<string, bool>();
+
+    // Переменные для UI и данных
     public TextAsset jsonFile; // Ссылка на JSON файл с диалогами
-    private Dictionary<string, Dialogue> dialogues; // Словарь для хранения всех диалогов
-    private string currentDialogId; // Текущий ID диалога
-    private Dictionary<string, bool> flags = new Dictionary<string, bool>(); // Словарь для хранения флагов
     public GameObject dialogueUI; // Ссылка на объект UI для диалога
     public TMP_Text dialogueText; // TMP_Text элемент для отображения текста диалога
     public TMP_Text option1Text; // TMP_Text элемент для первого варианта ответа
     public TMP_Text option2Text; // TMP_Text элемент для второго варианта ответа
     public TMP_Text option3Text; // TMP_Text элемент для третьего варианта ответа
     public TMP_Text characterNameText; // TMP_Text элемент для отображения имени персонажа
+
+    private string currentDialogId; // Текущий ID диалога
+    private Dictionary<string, Dialogue> dialogues; // Словарь для хранения всех диалогов
+
+    void Awake()
+    {
+        // Singleton pattern implementation
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // Сохраняем объект при переходе между сценами
+        }
+        else
+        {
+            Destroy(gameObject); // Уничтожаем дублирующиеся экземпляры
+        }
+    }
 
     void Start()
     {
@@ -23,6 +44,7 @@ public class DialogueManager : MonoBehaviour
 
     void LoadDialogues()
     {
+        // Загружаем и парсим JSON файл с диалогами
         DialogueContainer dialogueContainer = JsonUtility.FromJson<DialogueContainer>(jsonFile.text);
         dialogues = new Dictionary<string, Dialogue>();
         foreach (var dialogue in dialogueContainer.dialogs)
@@ -135,6 +157,29 @@ public class DialogueManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             ChooseResponse(2); // Выбор третьего ответа
+        }
+    }
+
+    // Методы для работы с флагами
+
+    public bool GetFlag(string flagName)
+    {
+        if (flags.ContainsKey(flagName))
+        {
+            return flags[flagName];
+        }
+        return false; // Если флаг не найден, вернуть false или обработать по-другому
+    }
+
+    public void SetFlag(string flagName, bool value)
+    {
+        if (flags.ContainsKey(flagName))
+        {
+            flags[flagName] = value;
+        }
+        else
+        {
+            flags.Add(flagName, value);
         }
     }
 }
