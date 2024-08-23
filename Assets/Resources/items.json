@@ -1,0 +1,32 @@
+{
+    "items": [
+        {
+            "id": "health_potion",
+            "name": "Зелье здоровья",
+            "description": "Восстанавливает 50 очков здоровья.",
+            "requiredFlag": "",
+            "acquiredFlag": "has_health_potion"
+        },
+        {
+            "id": "key",
+            "name": "Ключ",
+            "description": "Используется для открытия двери в подземелье.",
+            "requiredFlag": "",
+            "acquiredFlag": "has_key"
+        },
+        {
+            "id": "sword",
+            "name": "Меч",
+            "description": "Острый меч, идеально подходит для сражений.",
+            "requiredFlag": "can_use_sword",
+            "acquiredFlag": "has_sword"
+        },
+        {
+            "id": "shield",
+            "name": "Щит",
+            "description": "Прочный щит для защиты от атак.",
+            "requiredFlag": "can_use_shield",
+            "acquiredFlag": "has_shield"
+        }
+    ]
+}
