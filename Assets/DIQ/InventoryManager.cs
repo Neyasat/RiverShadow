@@ -3,13 +3,9 @@ using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
 {
-    // Словарь для хранения всех предметов из JSON
     private Dictionary<string, InventoryItem> itemDatabase;
-
-    // Словарь для хранения предметов инвентаря
     private Dictionary<string, InventoryItem> inventory;
 
-    // Ссылка на JSON файл с предметами
     public TextAsset jsonFile;
 
     void Start()
@@ -25,7 +21,6 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    // Метод для загрузки предметов из JSON файла
     void LoadItemsFromJson()
     {
         itemDatabase = new Dictionary<string, InventoryItem>();
@@ -37,13 +32,11 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    // Инициализация инвентаря
     void InitializeInventory()
     {
         inventory = new Dictionary<string, InventoryItem>();
     }
 
-    // Метод для добавления предмета в инвентарь
     public void AddItem(string itemId)
     {
         if (!inventory.ContainsKey(itemId) && itemDatabase.ContainsKey(itemId))
@@ -51,7 +44,6 @@ public class InventoryManager : MonoBehaviour
             InventoryItem newItem = itemDatabase[itemId];
             inventory.Add(itemId, newItem);
 
-            // Устанавливаем флаг в DialogueManager, что предмет собран
             DialogueManager.Instance.SetFlag(newItem.acquiredFlag, true);
 
             Debug.Log($"Предмет {newItem.name} добавлен в инвентарь.");
@@ -62,7 +54,6 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    // Метод для удаления предмета из инвентаря
     public void RemoveItem(string itemId)
     {
         if (inventory.ContainsKey(itemId))
@@ -70,7 +61,6 @@ public class InventoryManager : MonoBehaviour
             InventoryItem item = inventory[itemId];
             inventory.Remove(itemId);
 
-            // Устанавливаем флаг в DialogueManager, что предмет был удален или использован
             DialogueManager.Instance.SetFlag(item.acquiredFlag, false);
 
             Debug.Log($"Предмет {item.name} удален из инвентаря.");
@@ -81,13 +71,11 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    // Метод для проверки наличия предмета в инвентаре
     public bool HasItem(string itemId)
     {
         return inventory.ContainsKey(itemId);
     }
 
-    // Метод для получения предмета по его ID
     public InventoryItem GetItem(string itemId)
     {
         if (itemDatabase.ContainsKey(itemId))
@@ -98,7 +86,12 @@ public class InventoryManager : MonoBehaviour
         return null;
     }
 
-    // Метод для использования предмета
+    // Новый метод для получения всех предметов в инвентаре
+    public Dictionary<string, InventoryItem> GetAllItems()
+    {
+        return inventory;
+    }
+
     public void UseItem(string itemId)
     {
         if (inventory.ContainsKey(itemId))
@@ -106,9 +99,6 @@ public class InventoryManager : MonoBehaviour
             InventoryItem item = inventory[itemId];
             Debug.Log($"Использован предмет {item.name}");
 
-            // Здесь вы можете добавить логику, которая будет выполнена при использовании предмета
-
-            // После использования предмета, удалите его из инвентаря
             RemoveItem(itemId);
         }
         else
@@ -118,7 +108,6 @@ public class InventoryManager : MonoBehaviour
     }
 }
 
-// Класс для представления предмета инвентаря
 [System.Serializable]
 public class InventoryItem
 {
@@ -129,7 +118,6 @@ public class InventoryItem
     public string acquiredFlag;
 }
 
-// Класс для контейнера предметов из JSON
 [System.Serializable]
 public class ItemContainer
 {

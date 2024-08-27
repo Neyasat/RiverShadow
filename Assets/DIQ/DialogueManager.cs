@@ -4,7 +4,7 @@ using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
-    // Singleton instance
+    // Singleton instance //до добавления инвентаря(визуальной части)
     public static DialogueManager Instance { get; private set; }
 
     // Словарь для хранения всех флагов
