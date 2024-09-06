@@ -46,6 +46,8 @@ public class Zombie : MonoBehaviour
 
     void Attack()
     {
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero; // ќстанавливаем движение полностью
         animator.SetBool("isAttacking", true);
         lastAttackTime = Time.time;
     }
@@ -53,5 +55,6 @@ public class Zombie : MonoBehaviour
     public void OnAttackEnd()
     {
         animator.SetBool("isAttacking", false);
+        agent.isStopped = false; // ¬озобновл€ем движение после завершени€ атаки
     }
 }

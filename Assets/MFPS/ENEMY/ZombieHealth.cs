@@ -14,6 +14,7 @@ public class ZombieHealth : MonoBehaviour
     private Rigidbody rb; // Ссылка на Rigidbody
 
     public float hitStopDuration = 0.5f; // Время остановки зомби при получении урона
+    public float attackStopDuration = 1f; // Время остановки зомби при атаке
 
     void Start()
     {
@@ -40,6 +41,18 @@ public class ZombieHealth : MonoBehaviour
             // Останавливаем зомби на время анимации получения урона
             StartCoroutine(StopMovementDuringHit());
         }
+    }
+
+    // Метод для обработки атаки зомби
+    public void Attack()
+    {
+        if (isDead) return; // Если зомби мертв, он не может атаковать
+
+        // Воспроизводим анимацию атаки
+        animator.SetTrigger("AttackTrigger");
+
+        // Останавливаем зомби на время атаки
+        StartCoroutine(StopMovementDuringAttack());
     }
 
     void Die()
@@ -69,14 +82,24 @@ public class ZombieHealth : MonoBehaviour
         {
             agent.isStopped = true; // Останавливаем движение зомби
             agent.velocity = Vector3.zero; // Сбрасываем скорость агента
+            agent.enabled = false; // Отключаем NavMeshAgent
         }
+
+        // Запускаем корутину для отключения физики с задержкой
+        StartCoroutine(DisableRigidbodyWithDelay());
+    }
+
+    // Коррутина для отключения Rigidbody с задержкой
+    IEnumerator DisableRigidbodyWithDelay()
+    {
+        yield return new WaitForSeconds(1.0f); // Ждем, пока зомби упадет на землю
 
         // Остановка Rigidbody
         if (rb != null)
         {
+            rb.isKinematic = true;
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
-            rb.isKinematic = true;
         }
 
         // Уничтожаем объект через заданное время
@@ -99,6 +122,29 @@ public class ZombieHealth : MonoBehaviour
 
         // Ждем указанное время, пока зомби находится в состоянии получения урона
         yield return new WaitForSeconds(hitStopDuration);
+
+        if (agent != null && !isDead)
+        {
+            agent.isStopped = false; // Возобновляем движение, если зомби не мертв
+        }
+    }
+
+    // Коррутина для остановки движения во время анимации атаки
+    IEnumerator StopMovementDuringAttack()
+    {
+        if (agent != null)
+        {
+            agent.isStopped = true; // Останавливаем агент на время атаки
+            agent.velocity = Vector3.zero; // Сбрасываем скорость агента
+        }
+
+        if (rb != null)
+        {
+            rb.velocity = Vector3.zero; // Сбрасываем скорость Rigidbody
+        }
+
+        // Ждем указанное время, пока зомби выполняет атаку
+        yield return new WaitForSeconds(attackStopDuration);
 
         if (agent != null && !isDead)
         {
