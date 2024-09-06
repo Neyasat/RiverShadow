@@ -21,6 +21,9 @@ public class Zombie : MonoBehaviour
     public Vector3 deathColliderSize = new Vector3(1f, 0.5f, 2f); // Размер `BoxCollider`
     public Vector3 deathColliderCenter = new Vector3(0, 0.25f, 0); // Центр `BoxCollider`
 
+    // Параметры для позиции зомби
+    public float spacing = 2.0f; // Минимальное расстояние между зомби
+
     // Приватные компоненты
     private Animator animator;
     private NavMeshAgent agent;
@@ -45,6 +48,9 @@ public class Zombie : MonoBehaviour
     {
         if (isDead) return; // Если зомби мертв, не выполняем дальнейшие действия
 
+        // Поддерживаем расстояние между зомби
+        MaintainSpacing();
+
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
         if (distanceToPlayer <= attackRange)
@@ -66,6 +72,26 @@ public class Zombie : MonoBehaviour
 
             float speedPercent = agent.velocity.magnitude / agent.speed;
             animator.SetFloat("MoveSpeed", speedPercent);
+        }
+    }
+
+    // Метод для поддержания расстояния между зомби
+    void MaintainSpacing()
+    {
+        Zombie[] allZombies = FindObjectsOfType<Zombie>();
+
+        foreach (Zombie otherZombie in allZombies)
+        {
+            if (otherZombie != this)
+            {
+                float distance = Vector3.Distance(transform.position, otherZombie.transform.position);
+
+                if (distance < spacing)
+                {
+                    Vector3 direction = (transform.position - otherZombie.transform.position).normalized;
+                    transform.position = otherZombie.transform.position + direction * spacing;
+                }
+            }
         }
     }
 
@@ -124,14 +150,12 @@ public class Zombie : MonoBehaviour
         boxCollider.center = deathColliderCenter;
         boxCollider.enabled = true; // Включаем `BoxCollider`
 
-        // Убираем фиксацию ориентации `BoxCollider`, чтобы он вращался вместе с зомби
-
         StartCoroutine(DisableRigidbodyWithDelay());
     }
 
     IEnumerator DisableAnimatorAfterDelay()
     {
-        yield return new WaitForSeconds(5.0f); // Задержка 2 секунды, чтобы анимация смерти успела проиграться
+        yield return new WaitForSeconds(7.0f); // Задержка 2 секунды, чтобы анимация смерти успела проиграться
         animator.enabled = false; // Отключаем `Animator`
     }
 
