@@ -32,6 +32,55 @@ public class Zombie : MonoBehaviour
     private BoxCollider boxCollider; // Новый BoxCollider для использования после смерти
     private float lastAttackTime;
 
+    // Параметры конечностей
+    [Header("Сегменты конечностей")]
+
+    // Голова
+    [Header("Голова")]
+    public GameObject head;          // Голова зомби
+    public Collider headCollider;    // Коллайдер головы
+
+    private bool headRemoved = false;
+
+    // Левая рука
+    public GameObject leftUpperArm;    // Левое плечо
+    public GameObject leftForearm;     // Левое предплечье
+    public GameObject leftHand;        // Левая кисть
+
+    // Правая рука
+    public GameObject rightUpperArm;   // Правое плечо
+    public GameObject rightForearm;    // Правое предплечье
+    public GameObject rightHand;       // Правая кисть
+
+    // Левая нога
+    public GameObject leftThigh;       // Левое бедро
+    public GameObject leftCalf;        // Левая голень
+    public GameObject leftFoot;        // Левая ступня
+
+    // Правая нога
+    public GameObject rightThigh;      // Правое бедро
+    public GameObject rightCalf;       // Правая голень
+    public GameObject rightFoot;       // Правая ступня
+
+    [Header("Коллайдеры конечностей")]
+
+    public Collider leftArmCollider;
+    public Collider rightArmCollider;
+    public Collider leftLegCollider;
+    public Collider rightLegCollider;
+
+    private bool leftArmRemoved = false;
+    private bool rightArmRemoved = false;
+    private bool leftLegRemoved = false;
+    private bool rightLegRemoved = false;
+
+    [Header("Здоровье конечностей")]
+    public float headHealth = 20f;
+    public float leftArmHealth = 15f;
+    public float rightArmHealth = 15f;
+    public float leftLegHealth = 20f;
+    public float rightLegHealth = 20f;
+
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -96,11 +145,19 @@ public class Zombie : MonoBehaviour
     }
 
     // Метод для нанесения урона зомби
-    public void TakeDamage(float amount)
+    public void TakeDamage(float amount, Collider hitCollider)
     {
         if (isDead) return;
 
-        health -= amount;
+        // Проверяем, была ли поражена конечность
+        bool limbHit = CheckLimbHit(hitCollider, amount);
+
+        if (!limbHit)
+        {
+            // Если не попали в конечность, отнимаем урон от общего здоровья
+            health -= amount;
+        }
+
         if (health <= 0f)
         {
             Die();
@@ -110,6 +167,147 @@ public class Zombie : MonoBehaviour
             animator.SetTrigger("TakeDamageTrigger");
             StartCoroutine(StopMovementDuringHit());
         }
+    }
+
+    bool CheckLimbHit(Collider hitCollider, float damage)
+    {
+        if (hitCollider == headCollider && !headRemoved)
+        {
+            headHealth -= damage;
+            if (headHealth <= 0f)
+            {
+                RemoveLimb("Head");
+                headRemoved = true;
+            }
+            return true;
+        }
+        else if (hitCollider == leftArmCollider && !leftArmRemoved)
+        {
+            leftArmHealth -= damage;
+            if (leftArmHealth <= 0f)
+            {
+                RemoveLimb("LeftArm");
+                leftArmRemoved = true;
+            }
+            return true;
+        }
+        else if (hitCollider == rightArmCollider && !rightArmRemoved)
+        {
+            rightArmHealth -= damage;
+            if (rightArmHealth <= 0f)
+            {
+                RemoveLimb("RightArm");
+                rightArmRemoved = true;
+            }
+            return true;
+        }
+        else if (hitCollider == leftLegCollider && !leftLegRemoved)
+        {
+            leftLegHealth -= damage;
+            if (leftLegHealth <= 0f)
+            {
+                RemoveLimb("LeftLeg");
+                leftLegRemoved = true;
+                UpdateMovementAfterLegLoss();
+            }
+            return true;
+        }
+        else if (hitCollider == rightLegCollider && !rightLegRemoved)
+        {
+            rightLegHealth -= damage;
+            if (rightLegHealth <= 0f)
+            {
+                RemoveLimb("RightLeg");
+                rightLegRemoved = true;
+                UpdateMovementAfterLegLoss();
+            }
+            return true;
+        }
+
+        return false; // Не попали в конечность
+    }
+
+    void RemoveLimb(string limbName)
+    {
+        switch (limbName)
+        {
+            case "Head":
+                // Отключаем голову
+                head.SetActive(false);
+
+                // Отключаем коллайдер
+                headCollider.enabled = false;
+
+                // Зомби умирает при потере головы
+                Die();
+                break;
+
+            case "LeftArm":
+                // Отключаем сегменты левой руки
+                leftUpperArm.SetActive(false);
+                leftForearm.SetActive(false);
+                leftHand.SetActive(false);
+
+                // Отключаем коллайдер
+                leftArmCollider.enabled = false;
+                break;
+
+            case "RightArm":
+                // Отключаем сегменты правой руки
+                rightUpperArm.SetActive(false);
+                rightForearm.SetActive(false);
+                rightHand.SetActive(false);
+
+                // Отключаем коллайдер
+                rightArmCollider.enabled = false;
+                break;
+
+            case "LeftLeg":
+                // Отключаем сегменты левой ноги
+                leftThigh.SetActive(false);
+                leftCalf.SetActive(false);
+                leftFoot.SetActive(false);
+
+                // Отключаем коллайдер
+                leftLegCollider.enabled = false;
+                break;
+
+            case "RightLeg":
+                // Отключаем сегменты правой ноги
+                rightThigh.SetActive(false);
+                rightCalf.SetActive(false);
+                rightFoot.SetActive(false);
+
+                // Отключаем коллайдер
+                rightLegCollider.enabled = false;
+                break;
+        }
+
+        // Добавляем дополнительные эффекты при отстреле конечности
+        PlayLimbRemovalEffects(limbName);
+    }
+
+    void UpdateMovementAfterLegLoss()
+    {
+        // Если зомби потерял одну ногу
+        if ((leftLegRemoved && !rightLegRemoved) || (!leftLegRemoved && rightLegRemoved))
+        {
+            agent.speed *= 0.5f;
+        }
+        // Если зомби потерял обе ноги
+        else if (leftLegRemoved && rightLegRemoved)
+        {
+            agent.speed *= 0.2f;
+            animator.SetBool("isCrawling", true);
+        }
+    }
+
+    void PlayLimbRemovalEffects(string limbName)
+    {
+        // Реализуйте ваши эффекты здесь
+        // Например:
+        // Instantiate(bloodEffect, transform.position, Quaternion.identity);
+        // AudioSource.PlayClipAtPoint(limbRemovalSound, transform.position);
     }
 
     void Attack()
@@ -123,6 +321,7 @@ public class Zombie : MonoBehaviour
 
     void Die()
     {
+        if (isDead) return;
         isDead = true;
 
         if (deathEffect != null)
@@ -155,7 +354,7 @@ public class Zombie : MonoBehaviour
 
     IEnumerator DisableAnimatorAfterDelay()
     {
-        yield return new WaitForSeconds(7.0f); // Задержка 2 секунды, чтобы анимация смерти успела проиграться
+        yield return new WaitForSeconds(7.0f); // Задержка 7 секунд, чтобы анимация смерти успела проиграться
         animator.enabled = false; // Отключаем `Animator`
     }
 

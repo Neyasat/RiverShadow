@@ -176,11 +176,11 @@ public class GunController : MonoBehaviour
             }
 
             // Попадание по зомби с Zombie.cs
-            Zombie zombie = hit.transform.GetComponent<Zombie>();
+            Zombie zombie = hit.transform.GetComponentInParent<Zombie>();
             if (zombie != null)
             {
-                // Передаем урон
-                zombie.TakeDamage(damage);
+                // Передаем урон и коллайдер попадания
+                zombie.TakeDamage(damage, hit.collider);
             }
 
             // Создание эффекта попадания
