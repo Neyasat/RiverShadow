@@ -425,18 +425,18 @@ public class Zombie : MonoBehaviour
 
         // Добавляем и настраиваем первый ParticleSystem (фонтан крови)
         ParticleSystem psFountain = fountainBlood.AddComponent<ParticleSystem>();
-        ParticleSystemRenderer psrFountain = fountainBlood.AddComponent<ParticleSystemRenderer>();
+        ParticleSystemRenderer psrFountain = fountainBlood.GetComponent<ParticleSystemRenderer>();
 
         var mainFountain = psFountain.main;
         mainFountain.duration = 5f;
         mainFountain.loop = false;
         mainFountain.startLifetime = new ParticleSystem.MinMaxCurve(1f, 2f);
         mainFountain.startSpeed = new ParticleSystem.MinMaxCurve(1f, 3f);
-        mainFountain.startSize = new ParticleSystem.MinMaxCurve(0.1f, 0.2f); // Увеличили размер частиц в 5 раз
+        mainFountain.startSize = new ParticleSystem.MinMaxCurve(0.1f, 0.2f); // Увеличили размер частиц
         mainFountain.startColor = bloodColor; // Используем bloodColor для startColor
         mainFountain.gravityModifier = 0.5f;
         mainFountain.simulationSpace = ParticleSystemSimulationSpace.World;
-        mainFountain.maxParticles = 500000; // Увеличили максимальное количество частиц в 10 раз
+        mainFountain.maxParticles = 50000; // Увеличили максимальное количество частиц
 
         // Эмиссия для фонтана
         var emissionFountain = psFountain.emission;
@@ -487,7 +487,7 @@ public class Zombie : MonoBehaviour
 
         // Рендерер для фонтана
         psrFountain.material = new Material(Shader.Find("Particles/Standard Unlit"));
-        psrFountain.material.color = Color.white; // Установить цвет материала в белый
+        psrFountain.material.color = bloodColor; // Установите цвет материала в красный
         psrFountain.renderMode = ParticleSystemRenderMode.Billboard;
 
         // Создаем дочерний объект для разлета частиц на 360 градусов
@@ -498,7 +498,7 @@ public class Zombie : MonoBehaviour
 
         // Добавляем и настраиваем второй ParticleSystem (разлет на 360 градусов)
         ParticleSystem psBurst = burstBlood.AddComponent<ParticleSystem>();
-        ParticleSystemRenderer psrBurst = burstBlood.AddComponent<ParticleSystemRenderer>();
+        ParticleSystemRenderer psrBurst = burstBlood.GetComponent<ParticleSystemRenderer>();
 
         var mainBurst = psBurst.main;
         mainBurst.duration = 0.1f; // Короткий взрыв
@@ -509,13 +509,13 @@ public class Zombie : MonoBehaviour
         mainBurst.startColor = bloodColor; // Используем bloodColor для startColor
         mainBurst.gravityModifier = 0.5f;
         mainBurst.simulationSpace = ParticleSystemSimulationSpace.World;
-        mainBurst.maxParticles = 500000; // Увеличили максимальное количество частиц в 10 раз
+        mainBurst.maxParticles = 50000; // Увеличили максимальное количество частиц
 
         // Эмиссия для разлета
         var emissionBurst = psBurst.emission;
         emissionBurst.enabled = true;
         emissionBurst.SetBursts(new ParticleSystem.Burst[] {
-            new ParticleSystem.Burst(0f, totalParticlesFountain * 10) // Увеличили количество частиц на 10 раз
+            new ParticleSystem.Burst(0f, totalParticlesFountain * 10) // Увеличили количество частиц
         });
 
         // Форма для разлета
@@ -546,7 +546,7 @@ public class Zombie : MonoBehaviour
 
         // Рендерер для разлета
         psrBurst.material = new Material(Shader.Find("Particles/Standard Unlit"));
-        psrBurst.material.color = Color.white; // Установить цвет материала в белый
+        psrBurst.material.color = bloodColor; // Установите цвет материала в красный
         psrBurst.renderMode = ParticleSystemRenderMode.Billboard;
 
         // Запускаем оба эффекта
