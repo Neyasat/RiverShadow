@@ -1717,6 +1717,12 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1067053944}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &883112616 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3736545791093623874, guid: 27caef4afa668614dbf1e534425d33d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1067053944}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &883112617 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1281218804911103604, guid: 27caef4afa668614dbf1e534425d33d0,
@@ -1752,6 +1758,18 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8660203859262875706, guid: 35af8bf2573f2d9458eb42510e2d6006,
     type: 3}
   m_PrefabInstance: {fileID: 2729281212974237904}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &976415500 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7788497617363330769, guid: d2363dbc7547e9243b8ca5fafabd05c0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1898986633}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &976415502 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 1628694934020171771, guid: d2363dbc7547e9243b8ca5fafabd05c0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1898986633}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &983682229
 PrefabInstance:
@@ -2218,6 +2236,36 @@ PrefabInstance:
     - target: {fileID: 76514951211914219, guid: 27caef4afa668614dbf1e534425d33d0,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 467560615755495294, guid: 27caef4afa668614dbf1e534425d33d0,
+        type: 3}
+      propertyPath: recoilSpeed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 467560615755495294, guid: 27caef4afa668614dbf1e534425d33d0,
+        type: 3}
+      propertyPath: cameraRecoilSpeed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 467560615755495294, guid: 27caef4afa668614dbf1e534425d33d0,
+        type: 3}
+      propertyPath: cameraRecoilAmount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 467560615755495294, guid: 27caef4afa668614dbf1e534425d33d0,
+        type: 3}
+      propertyPath: recoilRotationSpeed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 467560615755495294, guid: 27caef4afa668614dbf1e534425d33d0,
+        type: 3}
+      propertyPath: recoilRotationAmountX
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 467560615755495294, guid: 27caef4afa668614dbf1e534425d33d0,
+        type: 3}
+      propertyPath: recoilRotationAmountY
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3767489033466202030, guid: 27caef4afa668614dbf1e534425d33d0,
@@ -3319,6 +3367,56 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2729281214845312454}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1690015954 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6103296436783279828, guid: d2363dbc7547e9243b8ca5fafabd05c0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1898986633}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1690015962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1690015954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a5176a91f0c98d47b44ea7059d69650, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  head: {fileID: 976415500}
+  headCollider: {fileID: 976415502}
+  headRemoved: 0
+  leftUpperArm: {fileID: 0}
+  leftForearm: {fileID: 0}
+  leftHand: {fileID: 0}
+  rightUpperArm: {fileID: 0}
+  rightForearm: {fileID: 0}
+  rightHand: {fileID: 0}
+  leftThigh: {fileID: 0}
+  leftCalf: {fileID: 0}
+  leftFoot: {fileID: 0}
+  rightThigh: {fileID: 0}
+  rightCalf: {fileID: 0}
+  rightFoot: {fileID: 0}
+  leftArmCollider: {fileID: 0}
+  rightArmCollider: {fileID: 0}
+  leftLegCollider: {fileID: 0}
+  rightLegCollider: {fileID: 0}
+  leftArmRemoved: 0
+  rightArmRemoved: 0
+  leftLegRemoved: 0
+  rightLegRemoved: 0
+  headHealth: 20
+  leftArmHealth: 15
+  rightArmHealth: 15
+  leftLegHealth: 20
+  rightLegHealth: 20
+  limbRemovalSound: {fileID: 0}
+  bloodColor: {r: 0.7830189, g: 0.18836774, b: 0.18836774, a: 1}
+  bloodParticleMultiplierFountain: 100
+  bloodParticleMultiplierBurst: 100
 --- !u!1001 &1771139419
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3575,11 +3673,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1628694934020171771, guid: d2363dbc7547e9243b8ca5fafabd05c0,
+        type: 3}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6103296436783279828, guid: d2363dbc7547e9243b8ca5fafabd05c0,
         type: 3}
       propertyPath: m_Name
       value: ShirtlessZombie_BodyParts_FREE Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 6670249619311303001, guid: d2363dbc7547e9243b8ca5fafabd05c0,
+        type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 883112616}
     - target: {fileID: 6915439308416463982, guid: d2363dbc7547e9243b8ca5fafabd05c0,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3633,7 +3741,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6103296436783279828, guid: d2363dbc7547e9243b8ca5fafabd05c0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1690015962}
   m_SourcePrefab: {fileID: 100100000, guid: d2363dbc7547e9243b8ca5fafabd05c0, type: 3}
 --- !u!1001 &1904332480
 PrefabInstance:
