@@ -1,37 +1,54 @@
 using UnityEngine;
+using System.Collections.Generic;
+using Cinemachine;
 
 public class VehicleSwitch : MonoBehaviour
 {
     public GameObject player; // Ссылка на игрока
     public GameObject vehicle; // Ссылка на автомобиль
     public Transform driverSeat; // Позиция водителя внутри автомобиля
-    public Transform vehicleCameraPosition; // Позиция камеры при управлении автомобилем
 
     private bool isPlayerInVehicle = false; // Флаг, находится ли игрок в автомобиле
     private VehicleFree vehicleController; // Ссылка на скрипт управления автомобилем
-    private PlayerMovement playerMovement; // Скрипт управления игроком
-    private GunController gunController; // Скрипт оружия игрока
-    private Camera playerCamera; // Камера игрока
+    private Rigidbody vehicleRigidbody; // Rigidbody автомобиля
     private Rigidbody playerRigidbody; // Rigidbody игрока
-    private Vector3 originalCameraPosition; // Исходная позиция камеры
-    private Quaternion originalCameraRotation; // Исходный поворот камеры
+
+    // Список скриптов, которые необходимо отключать при входе в автомобиль
+    public List<MonoBehaviour> scriptsToDisable = new List<MonoBehaviour>();
+
+    // Список объектов, которые необходимо скрывать при входе в автомобиль
+    public List<GameObject> objectsToHide = new List<GameObject>();
+
+    // Ссылка на камеру игрока
+    public Camera playerCamera;
+
+    // Ссылка на камеру автомобиля
+    public Camera vehicleCamera;
+
+    // Ссылка на виртуальную камеру автомобиля
+    public CinemachineVirtualCamera vehicleVirtualCamera;
 
     void Start()
     {
         // Получаем ссылки на компоненты
         vehicleController = vehicle.GetComponent<VehicleFree>();
-        playerMovement = player.GetComponent<PlayerMovement>();
-        gunController = player.GetComponentInChildren<GunController>();
-        playerCamera = player.GetComponentInChildren<Camera>();
+        vehicleRigidbody = vehicle.GetComponent<Rigidbody>();
         playerRigidbody = player.GetComponent<Rigidbody>();
-
-        // Сохраняем исходную позицию и поворот камеры
-        originalCameraPosition = playerCamera.transform.localPosition;
-        originalCameraRotation = playerCamera.transform.localRotation;
 
         // Отключаем управление автомобилем при старте
         if (vehicleController != null)
             vehicleController.enabled = false;
+
+        // Делаем Rigidbody автомобиля кинематическим при старте
+        if (vehicleRigidbody != null)
+            vehicleRigidbody.isKinematic = true;
+
+        // Убедитесь, что камера автомобиля и виртуальная камера отключены при запуске
+        if (vehicleCamera != null)
+            vehicleCamera.enabled = false;
+
+        if (vehicleVirtualCamera != null)
+            vehicleVirtualCamera.gameObject.SetActive(false);
     }
 
     void Update()
@@ -56,45 +73,49 @@ public class VehicleSwitch : MonoBehaviour
         isPlayerInVehicle = true;
 
         // Отключаем скрипты управления игроком
-        if (playerMovement != null)
-            playerMovement.enabled = false;
-
-        if (gunController != null)
-            gunController.enabled = false;
+        foreach (MonoBehaviour script in scriptsToDisable)
+        {
+            if (script != null)
+                script.enabled = false;
+        }
 
         // Делаем Rigidbody игрока кинематическим
         if (playerRigidbody != null)
             playerRigidbody.isKinematic = true;
 
-        // НЕ отключаем коллайдер игрока
-        // Collider playerCollider = player.GetComponent<Collider>();
-        // if (playerCollider != null)
-        //     playerCollider.enabled = false;
-
         // Перемещаем игрока на место водителя
         player.transform.position = driverSeat.position;
         player.transform.rotation = driverSeat.rotation;
-        // НЕ устанавливаем родительскую связь
-        // player.transform.SetParent(vehicle.transform);
 
         // Включаем управление автомобилем
         if (vehicleController != null)
             vehicleController.enabled = true;
 
-        // Настраиваем камеру для автомобиля
-        if (vehicleCameraPosition != null)
-        {
-            playerCamera.transform.position = vehicleCameraPosition.position;
-            playerCamera.transform.rotation = vehicleCameraPosition.rotation;
-            // При необходимости устанавливаем камеру как дочернюю автомобилю
-            playerCamera.transform.SetParent(vehicle.transform);
-        }
+        // Делаем Rigidbody автомобиля динамическим
+        if (vehicleRigidbody != null)
+            vehicleRigidbody.isKinematic = false;
 
-        // Скрываем модель игрока
-        Renderer[] renderers = player.GetComponentsInChildren<Renderer>();
-        foreach (Renderer rend in renderers)
+        // Отключаем камеру игрока
+        if (playerCamera != null)
+            playerCamera.enabled = false;
+
+        // Включаем камеру автомобиля
+        if (vehicleCamera != null)
+            vehicleCamera.enabled = true;
+        else
+            Debug.LogWarning("Vehicle camera is not assigned.");
+
+        // Включаем виртуальную камеру автомобиля
+        if (vehicleVirtualCamera != null)
+            vehicleVirtualCamera.gameObject.SetActive(true);
+        else
+            Debug.LogWarning("Vehicle virtual camera is not assigned.");
+
+        // Скрываем объекты из списка
+        foreach (GameObject obj in objectsToHide)
         {
-            rend.enabled = false;
+            if (obj != null)
+                obj.SetActive(false);
         }
 
         // Управление курсором
@@ -110,39 +131,42 @@ public class VehicleSwitch : MonoBehaviour
         if (vehicleController != null)
             vehicleController.enabled = false;
 
-        // Восстанавливаем камеру
-        playerCamera.transform.SetParent(player.transform);
-        playerCamera.transform.localPosition = originalCameraPosition;
-        playerCamera.transform.localRotation = originalCameraRotation;
+        // Делаем Rigidbody автомобиля кинематическим
+        if (vehicleRigidbody != null)
+            vehicleRigidbody.isKinematic = true;
 
-        // Отсоединяем игрока от автомобиля (если устанавливали родительскую связь)
-        // player.transform.SetParent(null);
+        // Включаем камеру игрока
+        if (playerCamera != null)
+            playerCamera.enabled = true;
+
+        // Отключаем камеру автомобиля
+        if (vehicleCamera != null)
+            vehicleCamera.enabled = false;
+
+        // Отключаем виртуальную камеру автомобиля
+        if (vehicleVirtualCamera != null)
+            vehicleVirtualCamera.gameObject.SetActive(false);
 
         // Перемещаем игрока рядом с автомобилем
         player.transform.position = driverSeat.position + vehicle.transform.right * 2f;
         player.transform.rotation = Quaternion.identity;
 
         // Включаем скрипты управления игроком
-        if (playerMovement != null)
-            playerMovement.enabled = true;
-
-        if (gunController != null)
-            gunController.enabled = true;
+        foreach (MonoBehaviour script in scriptsToDisable)
+        {
+            if (script != null)
+                script.enabled = true;
+        }
 
         // Включаем Rigidbody игрока
         if (playerRigidbody != null)
             playerRigidbody.isKinematic = false;
 
-        // Включаем коллайдер игрока (если отключали)
-        // Collider playerCollider = player.GetComponent<Collider>();
-        // if (playerCollider != null)
-        //     playerCollider.enabled = true;
-
-        // Показываем модель игрока
-        Renderer[] renderers = player.GetComponentsInChildren<Renderer>();
-        foreach (Renderer rend in renderers)
+        // Показываем объекты из списка
+        foreach (GameObject obj in objectsToHide)
         {
-            rend.enabled = true;
+            if (obj != null)
+                obj.SetActive(true);
         }
 
         // Управление курсором
